@@ -179,7 +179,6 @@ impl Parser {
             // Language::Ocaml => unsafe { tree_sitter_ocaml() }
             // Language::Php => unsafe { tree_sitter_php() }
             // Language::Ruby => unsafe { tree_sitter_ruby() }
-            // Language::Rust => unsafe { tree_sitter_rust() }
             // Language::Typescript => unsafe { tree_sitter_typescript() }
             // Language::Agda => unsafe { tree_sitter_agda() }
             // Language::CSharp => unsafe { tree_sitter_csharp() }
