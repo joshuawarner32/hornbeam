@@ -1,0 +1,30 @@
+[package]
+name = "tree-sitter"
+description = "Rust bindings to the Tree-sitter parsing library"
+version = "0.3.9"
+authors = ["Max Brunsfeld <maxbrunsfeld@gmail.com>"]
+license = "MIT"
+readme = "binding/README.md"
+keywords = ["incremental", "parsing"]
+categories = ["api-bindings", "parsing", "text-editors"]
+
+include = [
+  "/binding/*",
+  "/build.rs",
+  "/Cargo.toml",
+  "/include/*",
+  "/src/*",
+  "/utf8proc/*",
+]
+
+[dependencies]
+regex = "1"
+serde = "1.0"
+serde_json = "1.0"
+serde_derive = "1.0"
+
+[build-dependencies]
+cc = "1.0"
+
+[lib]
+path = "binding/lib.rs"

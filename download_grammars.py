@@ -38,12 +38,9 @@ grammars = [
     "embedded-template",
     "go",
     "html",
-    "javascript",
     "ocaml",
     "php",
-    "python",
     "ruby",
-    "rust",
     "typescript",
     "agda",
     "c-sharp",
@@ -63,6 +60,9 @@ shutil.copytree(target + "/lib", "tree-sitter")
 for g in grammars:
     target = clone_or_update("tree-sitter-" + g)
     os.makedirs("parsers/" + g, exist_ok=True)
+
+    if os.path.exists(target + "/examples"):
+        shutil.copytree(target + "/examples", "parsers/" + g + "/examples")
 
     include(g, "grammar.json")
     include(g, "parser.c")
