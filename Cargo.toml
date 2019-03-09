@@ -1,9 +1,52 @@
 [package]
-name = "general_parser"
+name = "hornbeam"
 version = "0.1.0"
 authors = ["Joshua Warner <joshuawarner32@gmail.com>"]
 edition = "2018"
 build = "build.rs"
+
+[features]
+default = ["lang_rust", "lang_python", "lang_bash", "lang_javascript"]
+all = [
+    "lang_javascript",
+    "lang_python",
+    "lang_rust",
+    "lang_bash",
+    "lang_c",
+    "lang_cpp",
+    "lang_css",
+    "lang_go",
+    "lang_html",
+    "lang_ocaml",
+    "lang_php",
+    "lang_ruby",
+    "lang_typescript",
+    "lang_agda",
+    "lang_csharp",
+    "lang_haskell",
+    "lang_java",
+    "lang_julia",
+    "lang_scala",
+]
+lang_javascript = []
+lang_python = []
+lang_rust = []
+lang_bash = []
+lang_c = []
+lang_cpp = []
+lang_css = []
+lang_go = []
+lang_html = []
+lang_ocaml = []
+lang_php = []
+lang_ruby = []
+lang_typescript = []
+lang_agda = []
+lang_csharp = []
+lang_haskell = []
+lang_java = []
+lang_julia = []
+lang_scala = []
 
 [dependencies]
 tree-sitter = { path = "tree-sitter" }

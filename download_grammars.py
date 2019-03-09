@@ -68,3 +68,4 @@ for g in grammars:
     include(g, "parser.c")
     include(g, "scanner.c")
     include(g, "scanner.cc")
+    include(g, "tag.h")

@@ -1,2 +1,3 @@
 /scratch/
-/target/
+target/
+/tree-sitter/Cargo.lock

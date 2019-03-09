@@ -4,7 +4,7 @@
 //   - include
 //   - utf8proc
 
-#define _POSIX_SOURCE
+// #define _POSIX_SOURCE
 #define UTF8PROC_STATIC
 
 #include "./get_changed_ranges.c"
