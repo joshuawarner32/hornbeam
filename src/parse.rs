@@ -61,6 +61,7 @@ extern "C" {
     fn tree_sitter_scala() -> ts::Language;
 }
 
+#[derive(Copy, Clone)]
 pub enum Language {
     Javascript,
     Python,

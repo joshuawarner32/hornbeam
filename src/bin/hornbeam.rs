@@ -62,31 +62,10 @@ struct ParseArgs {
 
     #[structopt(short = "k", long = "kind")]
     kind: Option<String>,
+
+    #[structopt(short = "g", long = "glob")]
+    glob: Option<String>,
 }
-
-// fn iter_files(dir: impl AsRef<Path>) -> impl Iterator<Item=(PathBuf, u64)> {
-//     WalkDir::new(dir).into_iter()
-//         .filter_map(|e| {
-//             let e = e.unwrap();
-//             let md = e.metadata().unwrap();
-//             if md.file_type().is_file() {
-//                 Some((e.path().to_owned(), md.len()))
-//             } else {
-//                 None
-//             }
-//         })
-// }
-
-// fn iter_file_strings(dir: impl AsRef<Path>) -> impl Iterator<Item=(PathBuf, String)> {
-//     iter_files(dir).filter_map(|(file, _size)| {
-//         let mut data = Vec::new();
-//         File::open(&file).unwrap().read_to_end(&mut data).unwrap();
-//         match String::from_utf8(data) {
-//             Ok(text) => Some((file, text)),
-//             Err(_) => None,
-//         }
-//     })
-// }
 
 fn read_file(path: impl AsRef<Path>) -> Result<String, Error> {
     let mut res = String::new();
@@ -145,6 +124,49 @@ impl Schema {
     }
 }
 
+trait Finder {
+    fn matches<'a>(&self, node: &Node<'a>) -> bool;
+}
+
+struct KindFinder(Kind);
+struct SchemaFinder(Schema);
+
+impl Finder for KindFinder {
+    fn matches<'a>(&self, node: &Node<'a>) -> bool {
+        node.kind() == self.0
+    }
+}
+
+impl Finder for SchemaFinder {
+    fn matches<'a>(&self, node: &Node<'a>) -> bool {
+        self.0.matches(node)
+    }
+}
+
+fn finder_for_args(parser: &mut Parser, args: &ParseArgs) -> Box<dyn Finder> {
+    if let Some(kind) = &args.kind {
+        let kind = parser.info.kind_from_name(&kind).unwrap();
+        return Box::new(KindFinder(kind));
+    }
+
+    if let Some(example) = &args.example {
+        let full = if let Some(context) = &args.context {
+            context.replace("@@", &example)
+        } else {
+            example.clone()
+        };
+
+        let ex = parser.parse(&full);
+        let ex = find_example(ex.root(), &example).unwrap();
+        println!("syntax: {:?}", ex);
+        let schema = Schema::from(ex);
+
+        return Box::new(SchemaFinder(schema));
+    }
+
+    panic!();
+}
+
 fn main() {
     let args = ParseArgs::from_args();
 
@@ -156,7 +178,7 @@ fn main() {
         }
     }
 
-    if let Some(file) = args.file {
+    if let Some(file) = &args.file {
         let text = read_file(file).unwrap();
 
         if args.replay {
@@ -169,29 +191,25 @@ fn main() {
 
         let tree = parser.parse(&text);
 
-        if let Some(kind) = args.kind {
-            let kind = parser.info.kind_from_name(&kind).unwrap();
-            for node in tree.nodes() {
-                if node.kind() == kind {
-                    println!("{}", node.text());
-                }
+        let finder = finder_for_args(&mut parser, &args);
+
+        for node in tree.nodes() {
+            if finder.matches(&node) {
+                println!("{}", node.text());
             }
         }
+    }
 
-        if let Some(example) = args.example {
-            let full = if let Some(context) = args.context {
-                context.replace("@@", &example)
-            } else {
-                example.clone()
-            };
+    if let Some(g) = &args.glob {
+        let finder = finder_for_args(&mut parser, &args);
 
-            let ex = parser.parse(&full);
-            let ex = find_example(ex.root(), &example).unwrap();
-            println!("syntax: {:?}", ex);
-            let schema = Schema::from(ex);
+        for entry in glob::glob(g).unwrap() {
+            let entry = entry.unwrap();
+            let text = read_file(&entry).unwrap();
+            let tree = parser.parse(&text);
 
             for node in tree.nodes() {
-                if schema.matches(&node) {
+                if finder.matches(&node) {
                     println!("{}", node.text());
                 }
             }
