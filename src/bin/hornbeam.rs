@@ -65,6 +65,9 @@ struct ParseArgs {
 
     #[structopt(short = "g", long = "glob")]
     glob: Option<String>,
+
+    #[structopt(short = "t", long = "tree")]
+    tree: bool,
 }
 
 fn read_file(path: impl AsRef<Path>) -> Result<String, Error> {
@@ -124,47 +127,92 @@ impl Schema {
     }
 }
 
-trait Finder {
-    fn matches<'a>(&self, node: &Node<'a>) -> bool;
+enum Finder {
+    Kind(Kind),
+    Schema(Schema),
 }
 
-struct KindFinder(Kind);
-struct SchemaFinder(Schema);
-
-impl Finder for KindFinder {
+impl Finder {
     fn matches<'a>(&self, node: &Node<'a>) -> bool {
-        node.kind() == self.0
+        match self {
+            Finder::Kind(k) => node.kind() == *k,
+            Finder::Schema(s) => s.matches(node),
+        }
+    }
+    fn from_args(parser: &mut Parser, args: &ParseArgs) -> Finder {
+        if let Some(kind) = &args.kind {
+            let kind = parser.info.kind_from_name(&kind).unwrap();
+            return Finder::Kind(kind);
+        }
+
+        if let Some(example) = &args.example {
+            let full = if let Some(context) = &args.context {
+                context.replace("@@", &example)
+            } else {
+                example.clone()
+            };
+
+            let ex = parser.parse(&full);
+            let ex = find_example(ex.root(), &example).unwrap();
+            println!("syntax: {:?}", ex);
+            let schema = Schema::from(ex);
+
+            return Finder::Schema(schema)
+        }
+
+        panic!();
     }
 }
 
-impl Finder for SchemaFinder {
-    fn matches<'a>(&self, node: &Node<'a>) -> bool {
-        self.0.matches(node)
+enum Action {
+    Replay,
+    Find(Finder),
+    Tree,
+}
+
+impl Action {
+    fn from_args(parser: &mut Parser, args: &ParseArgs) -> Action {
+        if args.replay {
+            return Action::Replay;
+        }
+        if args.tree {
+            return Action::Tree;
+        }
+        Action::Find(Finder::from_args(parser, args))
+    }
+
+    fn apply(&self, parser: &mut Parser, text: &str) {
+        match self {
+            Action::Replay => {
+                let text = text.replace('\n', " ");
+                for i in 0..text.len() + 1 {
+                    let prefix = &text[0..i];
+                    println!("{} {:?}", prefix, parser.parse(&prefix));
+                }
+            }
+            Action::Find(finder) => {
+                let tree = parser.parse(&text);
+
+                for node in tree.nodes() {
+                    if finder.matches(&node) {
+                        println!("{}", node.text());
+                    }
+                }
+            }
+            Action::Tree => {
+                let tree = parser.parse(&text);
+                print_node(&tree.root(), 0);
+            }
+        }
     }
 }
 
-fn finder_for_args(parser: &mut Parser, args: &ParseArgs) -> Box<dyn Finder> {
-    if let Some(kind) = &args.kind {
-        let kind = parser.info.kind_from_name(&kind).unwrap();
-        return Box::new(KindFinder(kind));
+fn print_node<'a>(node: &Node<'a>, indent: usize) {
+    println!("{:indent$}Begin {:?}", "", node.kind(), indent=indent*2);
+    for ch in node.children() {
+        print_node(&ch, indent + 1);
     }
-
-    if let Some(example) = &args.example {
-        let full = if let Some(context) = &args.context {
-            context.replace("@@", &example)
-        } else {
-            example.clone()
-        };
-
-        let ex = parser.parse(&full);
-        let ex = find_example(ex.root(), &example).unwrap();
-        println!("syntax: {:?}", ex);
-        let schema = Schema::from(ex);
-
-        return Box::new(SchemaFinder(schema));
-    }
-
-    panic!();
+    println!("{:indent$}End {:?}", "", node.kind(), indent=indent*2);
 }
 
 fn main() {
@@ -178,41 +226,18 @@ fn main() {
         }
     }
 
+    let action = Action::from_args(&mut parser, &args);
+
     if let Some(file) = &args.file {
         let text = read_file(file).unwrap();
-
-        if args.replay {
-            let text = text.replace('\n', " ");
-            for i in 0..text.len() + 1 {
-                let prefix = &text[0..i];
-                println!("{} {:?}", prefix, parser.parse(&prefix));
-            }
-        }
-
-        let tree = parser.parse(&text);
-
-        let finder = finder_for_args(&mut parser, &args);
-
-        for node in tree.nodes() {
-            if finder.matches(&node) {
-                println!("{}", node.text());
-            }
-        }
+        action.apply(&mut parser, &text);
     }
 
     if let Some(g) = &args.glob {
-        let finder = finder_for_args(&mut parser, &args);
-
         for entry in glob::glob(g).unwrap() {
             let entry = entry.unwrap();
             let text = read_file(&entry).unwrap();
-            let tree = parser.parse(&text);
-
-            for node in tree.nodes() {
-                if finder.matches(&node) {
-                    println!("{}", node.text());
-                }
-            }
+            action.apply(&mut parser, &text);
         }
     }
 }
