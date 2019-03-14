@@ -1,6 +1,8 @@
+use std::str::FromStr;
 use std::collections::HashMap;
 use std::fmt;
 use tree_sitter as ts;
+use failure::{Error, format_err};
 
 extern "C" {
     #[cfg(feature = "lang_javascript")]
@@ -61,7 +63,7 @@ extern "C" {
     fn tree_sitter_scala() -> ts::Language;
 }
 
-#[derive(Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub enum Language {
     Javascript,
     Python,
@@ -82,6 +84,36 @@ pub enum Language {
     Java,
     Julia,
     Scala,
+}
+
+
+impl FromStr for Language {
+    type Err = Error;
+
+    fn from_str(text: &str) -> Result<Self, Error> {
+        Ok(match text {
+            "javascript" => Language::Javascript,
+            "python" => Language::Python,
+            "rust" => Language::Rust,
+            "bash" => Language::Bash,
+            "c" => Language::C,
+            "cpp" => Language::Cpp,
+            "css" => Language::Css,
+            "go" => Language::Go,
+            "html" => Language::Html,
+            "ocaml" => Language::Ocaml,
+            "php" => Language::Php,
+            "ruby" => Language::Ruby,
+            "typescript" => Language::Typescript,
+            "agda" => Language::Agda,
+            "c-sharp" => Language::CSharp,
+            "haskell" => Language::Haskell,
+            "java" => Language::Java,
+            "julia" => Language::Julia,
+            "scala" => Language::Scala,
+            _ => return Err(format_err!("invalid language '{}'", text))
+        })
+    }
 }
 
 pub struct LanguageInfo {

@@ -7,43 +7,12 @@ use std::fs::File;
 use structopt::StructOpt as StructOptTrait;
 use structopt_derive::StructOpt;
 
-use hornbeam::{Language, Parser, Node, Kind};
-
-struct LangArg(Language);
-
-impl FromStr for LangArg {
-    type Err = Error;
-
-    fn from_str(text: &str) -> Result<Self, Error> {
-        Ok(LangArg(match text {
-            "javascript" => Language::Javascript,
-            "python" => Language::Python,
-            "rust" => Language::Rust,
-            "bash" => Language::Bash,
-            "c" => Language::C,
-            "cpp" => Language::Cpp,
-            "css" => Language::Css,
-            "go" => Language::Go,
-            "html" => Language::Html,
-            "ocaml" => Language::Ocaml,
-            "php" => Language::Php,
-            "ruby" => Language::Ruby,
-            "typescript" => Language::Typescript,
-            "agda" => Language::Agda,
-            "c-sharp" => Language::CSharp,
-            "haskell" => Language::Haskell,
-            "java" => Language::Java,
-            "julia" => Language::Julia,
-            "scala" => Language::Scala,
-            _ => return Err(format_err!("invalid language '{}'", text))
-        }))
-    }
-}
+use hornbeam::{Language, Parser, Node, Kind, Tree};
 
 #[derive(StructOpt)]
 struct ParseArgs {
     #[structopt(long = "lang")]
-    lang: LangArg,
+    lang: Language,
 
     #[structopt(parse(from_os_str))]
     file: Option<PathBuf>,
@@ -68,6 +37,9 @@ struct ParseArgs {
 
     #[structopt(short = "t", long = "tree")]
     tree: bool,
+
+    #[structopt(long = "transform")]
+    transform: Option<PathBuf>,
 }
 
 fn read_file(path: impl AsRef<Path>) -> Result<String, Error> {
@@ -168,6 +140,7 @@ enum Action {
     Replay,
     Find(Finder),
     Tree,
+    Transform(Transform),
 }
 
 impl Action {
@@ -177,6 +150,9 @@ impl Action {
         }
         if args.tree {
             return Action::Tree;
+        }
+        if let Some(tform_path) = &args.transform {
+            return Action::Transform(parse_transform(&read_file(tform_path).unwrap()));
         }
         Action::Find(Finder::from_args(parser, args))
     }
@@ -203,6 +179,9 @@ impl Action {
                 let tree = parser.parse(&text);
                 print_node(&tree.root(), 0);
             }
+            Action::Transform(_) => {
+                panic!()
+            }
         }
     }
 }
@@ -215,10 +194,94 @@ fn print_node<'a>(node: &Node<'a>, indent: usize) {
     println!("{:indent$}End {:?}", "", node.kind(), indent=indent*2);
 }
 
+#[derive(Debug)]
+struct LangTree {
+    lang: Language,
+    source: String,
+}
+
+#[derive(Debug)]
+struct Example {
+    from: LangTree,
+    to: LangTree,
+}
+
+#[derive(Debug)]
+struct Transform {
+    examples: Vec<Example>,
+}
+
+fn parse_transform(text: &str) -> Transform {
+    let mut newlines = vec![0];
+
+    newlines.extend(text.chars().enumerate()
+        .filter_map(|(i, ch)| if ch == '\n' { Some(i) } else { None }));
+
+    if newlines.last() != Some(&(text.len() - 1)) {
+        newlines.push(text.len());
+    }
+
+    #[derive(Debug)]
+    enum Chunk<'a> {
+        From(Language),
+        To(Language),
+        Text(&'a str),
+    }
+
+    let mut last = 0;
+    let mut chunks = Vec::new();
+
+    for p in newlines.windows(2) {
+        let t = &text[p[0]..p[1]];
+        if t.contains("--from") {
+            chunks.push(Chunk::Text(&text[last..p[0]]));
+            chunks.push(Chunk::From(find_lang(t)));
+            last = p[1];
+        } else if t.contains("--to") {
+            chunks.push(Chunk::Text(&text[last..p[0]]));
+            chunks.push(Chunk::To(find_lang(t)));
+            last = p[1];
+        }
+    }
+    chunks.push(Chunk::Text(&text[last..]));
+
+    let mut examples = Vec::new();
+
+    for c in chunks.windows(4) {
+        match (&c[0], &c[1], &c[2], &c[3]) {
+            (Chunk::From(from_lang), Chunk::Text(from_text), Chunk::To(to_lang), Chunk::Text(to_text)) => {
+                examples.push(Example {
+                    from: LangTree {
+                        lang: *from_lang,
+                        source: from_text.to_string(),
+                    },
+                    to: LangTree {
+                        lang: *to_lang,
+                        source: to_text.to_string(),
+                    },
+                });
+            }
+            _ => {}
+        }
+    }
+
+    for ex in examples {
+        println!("{:?}", ex);
+    }
+
+    panic!();
+}
+
+fn find_lang(text: &str) -> Language {
+    let l = text.find("lang:").unwrap();
+    let t = text[l + "lang:".len()..].trim();
+    Language::from_str(t).unwrap()
+}
+
 fn main() {
     let args = ParseArgs::from_args();
 
-    let mut parser = Parser::new(args.lang.0);
+    let mut parser = Parser::new(args.lang);
 
     if args.show_kinds {
         for kind in parser.info.kind_names() {
