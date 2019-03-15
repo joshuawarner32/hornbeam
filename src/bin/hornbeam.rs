@@ -1,13 +1,12 @@
 use std::str::FromStr;
-use failure::{Error, format_err};
+use failure::Error;
 use std::path::{Path, PathBuf};
-// use walkdir::WalkDir;
 use std::io::Read;
 use std::fs::File;
 use structopt::StructOpt as StructOptTrait;
 use structopt_derive::StructOpt;
 
-use hornbeam::{Language, Parser, Node, Kind, Tree};
+use hornbeam::{Language, Parser, Node, Kind, Child};
 
 #[derive(StructOpt)]
 struct ParseArgs {
@@ -51,8 +50,13 @@ fn read_file(path: impl AsRef<Path>) -> Result<String, Error> {
 fn find_example<'a>(node: Node<'a>, ex: &str) -> Option<Node<'a>> {
     if node.text().contains(ex) {
         for ch in node.children() {
-            if let Some(n) = find_example(ch, ex) {
-                return Some(n);
+            match ch {
+                Child::Node(ch) => {
+                    if let Some(n) = find_example(ch, ex) {
+                        return Some(n);
+                    }
+                }
+                Child::Text(text) => {}
             }
         }
         Some(node.clone())
@@ -71,7 +75,7 @@ impl Schema {
     fn from(node: Node) -> Schema {
         Schema {
             kind: node.kind(),
-            children: node.children().map(Schema::from).collect()
+            children: node.nodes().map(Schema::from).collect()
         }
     }
 
@@ -81,7 +85,7 @@ impl Schema {
         }
 
         let mut mch = self.children.iter();
-        let mut nch = node.children();
+        let mut nch = node.nodes();
 
         loop {
             match (mch.next(), nch.next()) {
@@ -177,7 +181,7 @@ impl Action {
             }
             Action::Tree => {
                 let tree = parser.parse(&text);
-                print_node(&tree.root(), 0);
+                print_children(&tree.root(), 0);
             }
             Action::Transform(_) => {
                 panic!()
@@ -186,10 +190,13 @@ impl Action {
     }
 }
 
-fn print_node<'a>(node: &Node<'a>, indent: usize) {
+fn print_children<'a>(node: &Node<'a>, indent: usize) {
     println!("{:indent$}Begin {:?}", "", node.kind(), indent=indent*2);
     for ch in node.children() {
-        print_node(&ch, indent + 1);
+        match ch {
+            Child::Node(ch) => print_children(&ch, indent + 1),
+            Child::Text(text) => println!("{:indent$}Text {:?}", "", text, indent=(indent + 1)*2),
+        }
     }
     println!("{:indent$}End {:?}", "", node.kind(), indent=indent*2);
 }

@@ -137,6 +137,12 @@ pub struct Node<'a> {
     text: &'a str,
 }
 
+#[derive(Clone)]
+pub enum Child<'a> {
+    Node(Node<'a>),
+    Text(&'a str),
+}
+
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone)]
 pub struct Kind(u16);
 
@@ -174,7 +180,7 @@ impl<'a> Node<'a> {
         Kind(self.inner.kind_id())
     }
 
-    pub fn children(&self) -> impl Iterator<Item=Node<'a>> {
+    pub fn nodes(&self) -> impl Iterator<Item=Node<'a>> {
         let text = self.text;
         self.inner.children().map(move |inner| Node {
             inner,
@@ -182,8 +188,68 @@ impl<'a> Node<'a> {
         })
     }
 
+    pub fn children(&self) -> impl Iterator<Item=Child<'a>> {
+        Children::new(self.text, self.inner.start_byte(), self.inner.end_byte(), self.inner.children())
+    }
+
     pub fn text(&self) -> &'a str {
         self.inner.utf8_text(self.text.as_bytes()).unwrap()
+    }
+}
+
+struct Children<'a, It: Iterator<Item=ts::Node<'a>>> {
+    text: &'a str,
+    it: It,
+    offset: usize,
+    end: usize,
+    buffer: Option<ts::Node<'a>>,
+}
+
+impl<'a, It: Iterator<Item=ts::Node<'a>>> Children<'a, It> {
+    fn new(text: &'a str, start: usize, end: usize, it: It) -> Children<'a, It> {
+        Children {
+            text,
+            it,
+            offset: start,
+            end,
+            buffer: None,
+        }
+    }
+}
+
+impl<'a, It: Iterator<Item=ts::Node<'a>>> Iterator for Children<'a, It> {
+    type Item = Child<'a>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some(node) = self.buffer.take() {
+            return Some(Child::Node(Node {
+                text: self.text,
+                inner: node,
+            }));
+        }
+
+        if let Some(node) = self.it.next() {
+            let start = node.start_byte();
+            assert!(start <= self.end);
+            if start > self.offset {
+                self.buffer = Some(node);
+                let offset = self.offset;
+                self.offset = node.end_byte();
+                Some(Child::Text(&self.text[offset..start]))
+            } else {
+                self.offset = node.end_byte();
+                Some(Child::Node(Node {
+                    text: self.text,
+                    inner: node,
+                }))
+            }
+        } else if self.offset < self.end {
+            let offset = self.offset;
+            self.offset = self.end;
+            Some(Child::Text(&self.text[offset..self.end]))
+        } else {
+            None
+        }
     }
 }
 

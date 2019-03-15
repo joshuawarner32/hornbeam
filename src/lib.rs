@@ -1,4 +1,5 @@
 mod parse;
+mod transform;
 
 pub use parse::{
     Language,
@@ -6,4 +7,13 @@ pub use parse::{
     Tree,
     Node,
     Kind,
+    Child,
+};
+
+pub use transform::{
+    Repeat,
+    Variadic,
+    Pattern,
+    Rule,
+    Program,
 };
