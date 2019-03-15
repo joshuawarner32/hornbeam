@@ -161,7 +161,7 @@ impl Pattern {
 
     fn replace(&self, vars: &Option<&str>) -> String {
         match self {
-            Pattern::Node { kind, children, } => {
+            Pattern::Node { kind: _, children, } => {
                 let mut text = String::new();
                 for ch in children {
                     text.push_str(&ch.replace(vars));
@@ -230,7 +230,6 @@ impl Program {
 
 #[cfg(test)]
 mod tests {
-    use crate::*;
     use super::*;
 
     #[test]
@@ -238,5 +237,12 @@ mod tests {
         let p = Program::parse(Language::Rust, Language::Rust, "fn a() {}", "fn a();", &["a"]);
         let r = p.apply("fn abcd() {}");
         assert_eq!(r, Some(String::from("fn abcd();")));
+    }
+
+    #[test]
+    fn test_pattern_cross() {
+        let p = Program::parse(Language::Rust, Language::Javascript, "fn a() {}", "function a() {}", &["a"]);
+        let r = p.apply("fn abcd() {}");
+        assert_eq!(r, Some(String::from("function abcd() {}")));
     }
 }
