@@ -63,7 +63,7 @@ extern "C" {
     fn tree_sitter_scala() -> ts::Language;
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 pub enum Language {
     Javascript,
     Python,
@@ -112,6 +112,33 @@ impl FromStr for Language {
             "julia" => Language::Julia,
             "scala" => Language::Scala,
             _ => return Err(format_err!("invalid language '{}'", text))
+        })
+    }
+}
+
+impl Language {
+    pub fn from_extension(ext: &str) -> Result<Self, Error> {
+        Ok(match ext {
+            "js" => Language::Javascript,
+            "py" => Language::Python,
+            "rs" => Language::Rust,
+            "sh" => Language::Bash,
+            "c" => Language::C,
+            "cpp" => Language::Cpp,
+            "css" => Language::Css,
+            "go" => Language::Go,
+            "html" => Language::Html,
+            "ocaml" => Language::Ocaml,
+            "php" => Language::Php,
+            "rb" => Language::Ruby,
+            "ts" => Language::Typescript,
+            "agda" => Language::Agda,
+            "cs" => Language::CSharp,
+            "hs" => Language::Haskell,
+            "java" => Language::Java,
+            "jl" => Language::Julia,
+            "scala" => Language::Scala,
+            _ => return Err(format_err!("invalid language extension '{}'", ext))
         })
     }
 }

@@ -16,4 +16,5 @@ pub use transform::{
     Pattern,
     Rule,
     Program,
+    Transform,
 };

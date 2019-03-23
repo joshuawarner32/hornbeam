@@ -6,7 +6,7 @@ edition = "2018"
 build = "build.rs"
 
 [features]
-default = ["lang_rust", "lang_python", "lang_bash", "lang_javascript"]
+default = ["lang_rust", "lang_python"]
 all = [
     "lang_javascript",
     "lang_python",

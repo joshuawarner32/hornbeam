@@ -1,4 +1,9 @@
 use crate::parse::{Parser, Kind, Language, Node, Child};
+use std::path::{Path, PathBuf};
+use std::fs::File;
+use std::io::Read;
+use std::fs;
+use std::collections::{HashMap, HashSet};
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
 pub enum Repeat {
@@ -225,6 +230,88 @@ impl Program {
             }
         }
         None
+    }
+}
+
+pub struct Transform {
+    program: Program,
+}
+
+#[derive(Debug)]
+pub struct Example {
+    label: String,
+    group: String,
+    lang: Language,
+    filename: String,
+    text: String,
+}
+
+#[derive(Copy, Clone, Debug, Hash, Eq, PartialEq)]
+pub struct ExampleId(usize);
+
+#[derive(Debug)]
+pub struct Examples {
+    list: Vec<Example>,
+    by_label: HashMap<String, Vec<ExampleId>>,
+    by_group: HashMap<String, Vec<ExampleId>>,
+}
+
+impl Transform {
+    pub fn load(path: impl AsRef<Path>) -> Transform {
+        let files = fs::read_dir(path.as_ref()).unwrap()
+            .map(|e| e.unwrap().file_name().to_str().unwrap().to_string())
+            .collect::<Vec<String>>();
+
+        let mut list = Vec::new();
+        let mut by_label = HashMap::new();
+        let mut by_group = HashMap::new();
+
+        for file in files {
+            let dash = file.rfind('-').unwrap();
+            let ext = file.rfind('.').unwrap();
+            let label = &file[..dash];
+            let group = &file[dash + 1..ext];
+            let ext = &file[ext + 1..];
+
+            let mut text = String::new();
+
+            File::open(path.as_ref().join(&file)).unwrap().read_to_string(&mut text).unwrap();
+
+            let ex = Example {
+                label: label.to_string(),
+                group: group.to_string(),
+                lang: Language::from_extension(ext).unwrap(),
+                filename: file.clone(),
+                text,
+            };
+
+            let id = ExampleId(list.len());
+            list.push(ex);
+
+            by_label.entry(label.to_string()).or_insert_with(Vec::new)
+                .push(id);
+
+            by_group.entry(group.to_string()).or_insert_with(Vec::new)
+                .push(id);
+        }
+
+        let examples = Examples { list, by_label, by_group };
+
+        for (_label, exes) in &examples.by_label {
+            for ex in exes {
+                println!("{:?}", examples.list[ex.0]);
+            }
+        }
+
+        let mut parsers = examples.list.iter().map(|e| e.lang).collect::<HashSet<_>>()
+            .into_iter().map(|l| (l, Parser::new(l))).collect::<HashMap<Language, Parser>>();
+
+        for ex in &examples.list {
+            let tree = parsers.get_mut(&ex.lang).unwrap().parse(&ex.text);
+            dbg!(tree);
+        }
+
+        panic!();
     }
 }
 
