@@ -148,7 +148,7 @@ static bool iterator_tree_is_visible(const Iterator *self) {
     Subtree parent = *self->cursor.stack.contents[self->cursor.stack.size - 2].subtree;
     const TSSymbol *alias_sequence = ts_language_alias_sequence(
       self->language,
-      parent.ptr->alias_sequence_id
+      parent.ptr->production_id
     );
     return alias_sequence && alias_sequence[entry.structural_child_index] != 0;
   }
@@ -171,7 +171,7 @@ static void iterator_get_visible_state(const Iterator *self, Subtree *tree,
       const Subtree *parent = self->cursor.stack.contents[i - 1].subtree;
       const TSSymbol *alias_sequence = ts_language_alias_sequence(
         self->language,
-        parent->ptr->alias_sequence_id
+        parent->ptr->production_id
       );
       if (alias_sequence) {
         *alias_symbol = alias_sequence[entry.structural_child_index];
@@ -326,13 +326,13 @@ static inline void iterator_print_state(Iterator *self) {
   TreeCursorEntry entry = *array_back(&self->cursor.stack);
   TSPoint start = iterator_start_position(self).extent;
   TSPoint end = iterator_end_position(self).extent;
-  const char *name = ts_language_symbol_name(self->language, entry.subtree->symbol);
+  const char *name = ts_language_symbol_name(self->language, ts_subtree_symbol(*entry.subtree));
   printf(
     "(%-25s %s\t depth:%u [%u, %u] - [%u, %u])",
     name, self->in_padding ? "(p)" : "   ",
     self->visible_depth,
-    start.row, start.column,
-    end.row, end.column
+    start.row + 1, start.column,
+    end.row + 1, end.column
   );
 }
 #endif
@@ -361,7 +361,7 @@ unsigned ts_subtree_get_changed_ranges(const Subtree *old_tree, const Subtree *n
 
   do {
     #ifdef DEBUG_GET_CHANGED_RANGES
-    printf("At [%-2u, %-2u] Compare ", position.extent.row, position.extent.column);
+    printf("At [%-2u, %-2u] Compare ", position.extent.row + 1, position.extent.column);
     iterator_print_state(&old_iter);
     printf("\tvs\t");
     iterator_print_state(&new_iter);
@@ -443,8 +443,8 @@ unsigned ts_subtree_get_changed_ranges(const Subtree *old_tree, const Subtree *n
       #ifdef DEBUG_GET_CHANGED_RANGES
       printf(
         "  change: [[%u, %u] - [%u, %u]]\n",
-        position.extent.row, position.extent.column,
-        next_position.extent.row, next_position.extent.column
+        position.extent.row + 1, position.extent.column,
+        next_position.extent.row + 1, next_position.extent.column
       );
       #endif
 

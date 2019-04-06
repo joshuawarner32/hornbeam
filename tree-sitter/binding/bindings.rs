@@ -3,6 +3,7 @@
 pub type __darwin_size_t = ::std::os::raw::c_ulong;
 pub type FILE = [u64; 19usize];
 pub type TSSymbol = u16;
+pub type TSFieldId = u16;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct TSLanguage {
@@ -137,16 +138,16 @@ extern "C" {
     ) -> *mut TSTree;
 }
 extern "C" {
-    pub fn ts_parser_enabled(arg1: *const TSParser) -> bool;
+    pub fn ts_parser_cancellation_flag(arg1: *const TSParser) -> *const usize;
 }
 extern "C" {
-    pub fn ts_parser_set_enabled(arg1: *mut TSParser, arg2: bool);
+    pub fn ts_parser_set_cancellation_flag(arg1: *mut TSParser, arg2: *const usize);
 }
 extern "C" {
-    pub fn ts_parser_operation_limit(arg1: *const TSParser) -> usize;
+    pub fn ts_parser_timeout_micros(arg1: *const TSParser) -> u64;
 }
 extern "C" {
-    pub fn ts_parser_set_operation_limit(arg1: *mut TSParser, arg2: usize);
+    pub fn ts_parser_set_timeout_micros(arg1: *mut TSParser, arg2: u64);
 }
 extern "C" {
     pub fn ts_parser_reset(arg1: *mut TSParser);
@@ -228,6 +229,16 @@ extern "C" {
     pub fn ts_node_child(arg1: TSNode, arg2: u32) -> TSNode;
 }
 extern "C" {
+    pub fn ts_node_child_by_field_id(arg1: TSNode, arg2: TSFieldId) -> TSNode;
+}
+extern "C" {
+    pub fn ts_node_child_by_field_name(
+        arg1: TSNode,
+        arg2: *const ::std::os::raw::c_char,
+        arg3: u32,
+    ) -> TSNode;
+}
+extern "C" {
     pub fn ts_node_named_child(arg1: TSNode, arg2: u32) -> TSNode;
 }
 extern "C" {
@@ -287,6 +298,14 @@ extern "C" {
     pub fn ts_tree_cursor_current_node(arg1: *const TSTreeCursor) -> TSNode;
 }
 extern "C" {
+    pub fn ts_tree_cursor_current_field_id(arg1: *const TSTreeCursor) -> TSFieldId;
+}
+extern "C" {
+    pub fn ts_tree_cursor_current_field_name(
+        arg1: *const TSTreeCursor,
+    ) -> *const ::std::os::raw::c_char;
+}
+extern "C" {
     pub fn ts_tree_cursor_goto_parent(arg1: *mut TSTreeCursor) -> bool;
 }
 extern "C" {
@@ -314,10 +333,27 @@ extern "C" {
     ) -> TSSymbol;
 }
 extern "C" {
+    pub fn ts_language_field_count(arg1: *const TSLanguage) -> u32;
+}
+extern "C" {
+    pub fn ts_language_field_name_for_id(
+        arg1: *const TSLanguage,
+        arg2: TSFieldId,
+    ) -> *const ::std::os::raw::c_char;
+}
+extern "C" {
+    pub fn ts_language_field_id_for_name(
+        arg1: *const TSLanguage,
+        arg2: *const ::std::os::raw::c_char,
+        arg3: u32,
+    ) -> TSFieldId;
+}
+extern "C" {
     pub fn ts_language_symbol_type(arg1: *const TSLanguage, arg2: TSSymbol) -> TSSymbolType;
 }
 extern "C" {
     pub fn ts_language_version(arg1: *const TSLanguage) -> u32;
 }
 
-pub const TREE_SITTER_LANGUAGE_VERSION: usize = 9;
+pub const TREE_SITTER_LANGUAGE_VERSION: usize = 10;
+pub const TREE_SITTER_MIN_COMPATIBLE_LANGUAGE_VERSION: usize = 9;
