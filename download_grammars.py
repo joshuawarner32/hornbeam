@@ -52,11 +52,11 @@ grammars = [
 
 os.makedirs("scratch", exist_ok=True)
 
-target = clone_or_update("tree-sitter")
+target = clone_or_update("tree-sitter", recursive=True)
 shutil.rmtree("tree-sitter")
-shutil.rmtree("parsers")
 shutil.copytree(target + "/lib", "tree-sitter")
 
+shutil.rmtree("parsers")
 for g in grammars:
     target = clone_or_update("tree-sitter-" + g)
     os.makedirs("parsers/" + g, exist_ok=True)
