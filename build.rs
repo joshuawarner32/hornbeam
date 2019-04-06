@@ -1,134 +1,171 @@
 
-fn main() {
-    let mut c = cc::Build::new();
-    c
-        .include("tree-sitter/include")
-        .include("tree-sitter/utf8proc")
-        .flag("-Wno-unused-parameter");
+struct Compiler {
+    c: cc::Build,
+    cpp: cc::Build,
+    saw_c_file: bool,
+    saw_cpp_file: bool,
+}
 
-    let mut cpp = cc::Build::new();
-    cpp
-        .include("tree-sitter/include")
-        .include("tree-sitter/utf8proc")
-        .flag("-Wno-unused-parameter")
-        .cpp(true)
-        .flag("-std=c++11");
+impl Compiler {
+    fn new() -> Compiler {
+        let mut c = cc::Build::new();
+        c
+            .include("tree-sitter/include")
+            .include("tree-sitter/utf8proc")
+            .flag("-Wno-unused-parameter");
+
+        let mut cpp = cc::Build::new();
+        cpp
+            .include("tree-sitter/include")
+            .include("tree-sitter/utf8proc")
+            .flag("-Wno-unused-parameter")
+            .cpp(true)
+            .flag("-std=c++11");
+
+        Compiler {
+            c,
+            cpp,
+            saw_c_file: false,
+            saw_cpp_file: false,
+        }
+    }
+
+    fn c_file(&mut self, path: &str) {
+        self.saw_c_file = true;
+        self.c.file(path);
+        println!("cargo:rerun-if-changed={}", path);
+    }
+
+    fn cpp_file(&mut self, path: &str) {
+        self.saw_cpp_file = true;
+        self.cpp.file(path);
+        println!("cargo:rerun-if-changed={}", path);
+    }
+
+    fn finish(self) {
+        if self.saw_c_file {
+            self.c.compile("parsers_c");
+        }
+
+        if self.saw_cpp_file {
+            self.cpp.compile("parsers_cpp");
+        }
+    }
+}
+
+
+fn main() {
+
+    let mut compile = Compiler::new();
 
     #[cfg(feature = "lang_rust")]
     {
-        c.file("parsers/rust/parser.c");
-        c.file("parsers/rust/scanner.c");
+        compile.c_file("parsers/rust/parser.c");
+        compile.c_file("parsers/rust/scanner.c");
     }
 
     #[cfg(feature = "lang_javascript")]
     {
-        c.file("parsers/javascript/parser.c");
-        c.file("parsers/javascript/scanner.c");
+        compile.c_file("parsers/javascript/parser.c");
+        compile.c_file("parsers/javascript/scanner.c");
     }
 
     #[cfg(feature = "lang_python")]
     {
-        c.file("parsers/python/parser.c");
-        cpp.file("parsers/python/scanner.cc");
+        compile.c_file("parsers/python/parser.c");
+        compile.cpp_file("parsers/python/scanner.cc");
     }
 
     #[cfg(feature = "lang_bash")]
     {
-        c.file("parsers/bash/parser.c");
-        cpp.file("parsers/bash/scanner.cc");
+        compile.c_file("parsers/bash/parser.c");
+        compile.cpp_file("parsers/bash/scanner.cc");
     }
 
     #[cfg(feature = "lang_c")]
     {
-        c.file("parsers/c/parser.c");
+        compile.c_file("parsers/c/parser.c");
     }
 
     #[cfg(feature = "lang_cpp")]
     {
-        c.file("parsers/cpp/parser.c");
-        cpp.file("parsers/cpp/scanner.cc");
+        compile.c_file("parsers/cpp/parser.c");
+        compile.cpp_file("parsers/cpp/scanner.cc");
     }
 
     #[cfg(feature = "lang_css")]
     {
-        c.file("parsers/css/parser.c");
-        c.file("parsers/css/scanner.c");
+        compile.c_file("parsers/css/parser.c");
+        compile.c_file("parsers/css/scanner.c");
     }
 
     #[cfg(feature = "lang_go")]
     {
-        c.file("parsers/go/parser.c");
+        compile.c_file("parsers/go/parser.c");
     }
 
     #[cfg(feature = "lang_html")]
     {
-        c.file("parsers/html/parser.c");
-        cpp.file("parsers/html/scanner.cc");
+        compile.c_file("parsers/html/parser.c");
+        compile.cpp_file("parsers/html/scanner.cc");
     }
 
     #[cfg(feature = "lang_ocaml")]
     {
-        c.file("parsers/ocaml/parser.c");
-        cpp.file("parsers/ocaml/scanner.cc");
+        compile.c_file("parsers/ocaml/parser.c");
+        compile.cpp_file("parsers/ocaml/scanner.cc");
     }
 
     #[cfg(feature = "lang_php")]
     {
-        c.file("parsers/php/parser.c");
-        cpp.file("parsers/php/scanner.cc");
+        compile.c_file("parsers/php/parser.c");
+        compile.cpp_file("parsers/php/scanner.cc");
     }
 
     #[cfg(feature = "lang_ruby")]
     {
-        c.file("parsers/ruby/parser.c");
-        cpp.file("parsers/ruby/scanner.cc");
+        compile.c_file("parsers/ruby/parser.c");
+        compile.cpp_file("parsers/ruby/scanner.cc");
     }
 
     #[cfg(feature = "lang_typescript")]
     {
-        c.file("parsers/typescript/parser.c");
-        c.file("parsers/typescript/scanner.c");
+        compile.c_file("parsers/typescript/parser.c");
+        compile.c_file("parsers/typescript/scanner.c");
     }
 
     #[cfg(feature = "lang_agda")]
     {
-        c.file("parsers/agda/parser.c");
-        cpp.file("parsers/agda/scanner.cc");
+        compile.c_file("parsers/agda/parser.c");
+        compile.cpp_file("parsers/agda/scanner.cc");
     }
 
     #[cfg(feature = "lang_csharp")]
     {
-        c.file("parsers/c-sharp/parser.c");
+        compile.c_file("parsers/c-sharp/parser.c");
     }
 
     #[cfg(feature = "lang_haskell")]
     {
-        c.file("parsers/haskell/parser.c");
-        cpp.file("parsers/haskell/scanner.cc");
+        compile.c_file("parsers/haskell/parser.c");
+        compile.cpp_file("parsers/haskell/scanner.cc");
     }
 
     #[cfg(feature = "lang_java")]
     {
-        c.file("parsers/java/parser.c");
+        compile.c_file("parsers/java/parser.c");
     }
 
     #[cfg(feature = "lang_julia")]
     {
-        c.file("parsers/julia/parser.c");
+        compile.c_file("parsers/julia/parser.c");
     }
 
     #[cfg(feature = "lang_scala")]
     {
-        c.file("parsers/scala/parser.c");
-        c.file("parsers/scala/scanner.c");
+        compile.c_file("parsers/scala/parser.c");
+        compile.c_file("parsers/scala/scanner.c");
     }
 
-    c.compile("parsers_c");
-
-    #[cfg(any(feature="lang_python", feature="lang_bash", feature="lang_cpp",
-        feature="lang_html", feature="lang_ocaml", feature="lang_php",
-        feature="lang_ruby", feature="lang_agda", feature="lang_haskell"))]
-    {
-        cpp.compile("parsers_cpp");
-    }
+    compile.finish();
 }
