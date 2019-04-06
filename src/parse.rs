@@ -145,7 +145,7 @@ impl Language {
 
 pub struct LanguageInfo {
     kinds_by_name: HashMap<&'static str, Kind>,
-    // kinds_by_id: Vec<&'static str>,
+    kinds_by_id: Vec<&'static str>,
 }
 
 pub struct Parser {
@@ -314,11 +314,11 @@ impl<'a> Iterator for AllWalker<'a> {
 impl LanguageInfo {
     fn new(lang: ts::Language) -> LanguageInfo {
         let mut kinds_by_name = HashMap::new();
-        // let mut kinds_by_id = Vec::new();
+        let mut kinds_by_id = Vec::new();
 
         for k in 0..lang.node_kind_count() {
             let name = lang.node_kind_for_id(k as u16);
-            // kinds_by_id.push(name);
+            kinds_by_id.push(name);
             if lang.node_kind_is_named(k as u16) {
                 // TODO: deal with duplicate names (they exist!?!?!)
                 kinds_by_name.insert(name, Kind(k as u16));
@@ -327,7 +327,7 @@ impl LanguageInfo {
 
         LanguageInfo {
             kinds_by_name,
-            // kinds_by_id,
+            kinds_by_id,
         }
     }
 
@@ -335,8 +335,8 @@ impl LanguageInfo {
         self.kinds_by_name.get(name).cloned()
     }
 
-    pub fn kind_names(&self) -> impl Iterator<Item=&str> {
-        self.kinds_by_name.keys().cloned()
+    pub fn kind_names(&self) -> &[&str] {
+        &self.kinds_by_id
     }
 }
 

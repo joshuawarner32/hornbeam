@@ -187,12 +187,18 @@ impl Action {
 enum Tool {
     Action(Parser, Action),
     Transform(Transform),
+    Show(Parser),
 }
 
 impl Tool {
     fn from_args(args: &ParseArgs) -> Tool {
         if let Some(lang) = &args.lang {
             let mut parser = Parser::new(*lang);
+
+            if args.show_kinds {
+                return Tool::Show(parser);
+            }
+
             let action = Action::from_args(&mut parser, &args);
 
             return Tool::Action(parser, action);
@@ -244,6 +250,12 @@ fn main() {
         }
         Tool::Transform(transform) => {
             // TODO
+        }
+        Tool::Show(mut parser) => {
+            for (i, name) in parser.info.kind_names().iter().enumerate() {
+                println!("{}: {}", i, name);
+            }
+
         }
     }
 }
