@@ -1,0 +1,366 @@
+[
+  {
+    "type": "adjacent_sibling_selector",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "arguments",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "at_rule",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "attribute_selector",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "binary_expression",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "binary_query",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "block",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "call_expression",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "charset_statement",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "child_selector",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "class_selector",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "color_value",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "declaration",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "descendant_selector",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "feature_query",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "float_value",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "id_selector",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "import_statement",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "integer_value",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "keyframe_block",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "keyframe_block_list",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "keyframes_statement",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "media_statement",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "namespace_statement",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "parenthesized_query",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "parenthesized_value",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "pseudo_class_selector",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "pseudo_element_selector",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "rule_set",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "selector_query",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "selectors",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "sibling_selector",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "stylesheet",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "supports_statement",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "unary_query",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "universal_selector",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "@import",
+    "named": false
+  },
+  {
+    "type": ",",
+    "named": false
+  },
+  {
+    "type": ";",
+    "named": false
+  },
+  {
+    "type": "@media",
+    "named": false
+  },
+  {
+    "type": "@charset",
+    "named": false
+  },
+  {
+    "type": "@namespace",
+    "named": false
+  },
+  {
+    "type": "@keyframes",
+    "named": false
+  },
+  {
+    "type": "{",
+    "named": false
+  },
+  {
+    "type": "}",
+    "named": false
+  },
+  {
+    "type": "from",
+    "named": true
+  },
+  {
+    "type": "to",
+    "named": true
+  },
+  {
+    "type": "@supports",
+    "named": false
+  },
+  {
+    "type": "nesting_selector",
+    "named": true
+  },
+  {
+    "type": "*",
+    "named": false
+  },
+  {
+    "type": ".",
+    "named": false
+  },
+  {
+    "type": ":",
+    "named": false
+  },
+  {
+    "type": "::",
+    "named": false
+  },
+  {
+    "type": "#",
+    "named": false
+  },
+  {
+    "type": "[",
+    "named": false
+  },
+  {
+    "type": "=",
+    "named": false
+  },
+  {
+    "type": "~=",
+    "named": false
+  },
+  {
+    "type": "^=",
+    "named": false
+  },
+  {
+    "type": "|=",
+    "named": false
+  },
+  {
+    "type": "*=",
+    "named": false
+  },
+  {
+    "type": "$=",
+    "named": false
+  },
+  {
+    "type": "]",
+    "named": false
+  },
+  {
+    "type": ">",
+    "named": false
+  },
+  {
+    "type": "~",
+    "named": false
+  },
+  {
+    "type": "+",
+    "named": false
+  },
+  {
+    "type": "(",
+    "named": false
+  },
+  {
+    "type": ")",
+    "named": false
+  },
+  {
+    "type": "important",
+    "named": true
+  },
+  {
+    "type": "(",
+    "named": false
+  },
+  {
+    "type": "and",
+    "named": false
+  },
+  {
+    "type": "or",
+    "named": false
+  },
+  {
+    "type": "not",
+    "named": false
+  },
+  {
+    "type": "only",
+    "named": false
+  },
+  {
+    "type": "selector",
+    "named": false
+  },
+  {
+    "type": "string_value",
+    "named": true
+  },
+  {
+    "type": "unit",
+    "named": true
+  },
+  {
+    "type": "-",
+    "named": false
+  },
+  {
+    "type": "/",
+    "named": false
+  },
+  {
+    "type": "identifier",
+    "named": true
+  },
+  {
+    "type": "at_keyword",
+    "named": true
+  },
+  {
+    "type": "comment",
+    "named": true
+  },
+  {
+    "type": "plain_value",
+    "named": true
+  }
+]

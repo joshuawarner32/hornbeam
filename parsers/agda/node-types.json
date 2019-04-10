@@ -1,0 +1,563 @@
+[
+  {
+    "type": "abstract",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "anonymous_name",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "atom",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "catchall_pragma",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "data",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "data_signature_only",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "do",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "expr",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "field",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "field_assignment",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "forall_bindings",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "function_clause",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "generalize",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "hole_name",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "import_directive",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "infix",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "instance",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "integer",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "lambda",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "lambda_clause",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "lambda_clause_absurd",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "let",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "lhs",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "literal",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "macro",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "module",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "module_application",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "module_assignment",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "module_macro",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "mutual",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "open",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "pattern",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "postulate",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "primitive",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "private",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "record",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "record_assignments",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "record_constructor",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "record_constructor_instance",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "record_declarations_block",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "record_eta",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "record_induction",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "record_signature_only",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "renaming",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "rewrite_equations",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "rhs",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "simple_hole",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "simple_type_sig",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "source_file",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "string",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "syntax",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "type_sig",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "type_sig_instance",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "typed_binding",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "untyped_binding",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "where_clause",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "with_expressions",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "comment",
+    "named": true
+  },
+  {
+    "type": "name",
+    "named": true
+  },
+  {
+    "type": "qualified_name",
+    "named": true
+  },
+  {
+    "type": "_",
+    "named": false
+  },
+  {
+    "type": ".",
+    "named": false
+  },
+  {
+    "type": "..",
+    "named": false
+  },
+  {
+    "type": "{",
+    "named": false
+  },
+  {
+    "type": "}",
+    "named": false
+  },
+  {
+    "type": "{{",
+    "named": false
+  },
+  {
+    "type": "}}",
+    "named": false
+  },
+  {
+    "type": "rewrite",
+    "named": false
+  },
+  {
+    "type": "with",
+    "named": false
+  },
+  {
+    "type": ":",
+    "named": false
+  },
+  {
+    "type": "=",
+    "named": false
+  },
+  {
+    "type": "where",
+    "named": false
+  },
+  {
+    "type": "module",
+    "named": false
+  },
+  {
+    "type": "data",
+    "named": false
+  },
+  {
+    "type": "record",
+    "named": false
+  },
+  {
+    "type": "open",
+    "named": false
+  },
+  {
+    "type": "import",
+    "named": false
+  },
+  {
+    "type": "as",
+    "named": false
+  },
+  {
+    "type": "public",
+    "named": false
+  },
+  {
+    "type": "using",
+    "named": false
+  },
+  {
+    "type": "(",
+    "named": false
+  },
+  {
+    "type": ")",
+    "named": false
+  },
+  {
+    "type": "hiding",
+    "named": false
+  },
+  {
+    "type": "renaming",
+    "named": false
+  },
+  {
+    "type": ";",
+    "named": false
+  },
+  {
+    "type": "to",
+    "named": false
+  },
+  {
+    "type": "pragma",
+    "named": true
+  },
+  {
+    "type": "infix",
+    "named": false
+  },
+  {
+    "type": "infixl",
+    "named": false
+  },
+  {
+    "type": "infixr",
+    "named": false
+  },
+  {
+    "type": "pattern",
+    "named": false
+  },
+  {
+    "type": "syntax",
+    "named": false
+  },
+  {
+    "type": "codata",
+    "named": false
+  },
+  {
+    "type": "instance",
+    "named": false
+  },
+  {
+    "type": "constructor",
+    "named": false
+  },
+  {
+    "type": "inductive",
+    "named": false
+  },
+  {
+    "type": "coinductive",
+    "named": false
+  },
+  {
+    "type": "eta-equality",
+    "named": false
+  },
+  {
+    "type": "no-eta-equality",
+    "named": false
+  },
+  {
+    "type": "...",
+    "named": false
+  },
+  {
+    "type": "field",
+    "named": false
+  },
+  {
+    "type": "overlap",
+    "named": false
+  },
+  {
+    "type": "generalize",
+    "named": false
+  },
+  {
+    "type": "mutual",
+    "named": false
+  },
+  {
+    "type": "abstract",
+    "named": false
+  },
+  {
+    "type": "private",
+    "named": false
+  },
+  {
+    "type": "macro",
+    "named": false
+  },
+  {
+    "type": "postulate",
+    "named": false
+  },
+  {
+    "type": "primitive",
+    "named": false
+  },
+  {
+    "type": "{-#",
+    "named": false
+  },
+  {
+    "type": "CATCHALL",
+    "named": false
+  },
+  {
+    "type": "#-}",
+    "named": false
+  },
+  {
+    "type": "|",
+    "named": false
+  },
+  {
+    "type": "quoteGoal",
+    "named": false
+  },
+  {
+    "type": "in",
+    "named": false
+  },
+  {
+    "type": "tactic",
+    "named": false
+  },
+  {
+    "type": "do",
+    "named": false
+  },
+  {
+    "type": "let",
+    "named": false
+  },
+  {
+    "type": "?",
+    "named": false
+  },
+  {
+    "type": "Set",
+    "named": false
+  },
+  {
+    "type": "Prop",
+    "named": false
+  },
+  {
+    "type": "quote",
+    "named": false
+  },
+  {
+    "type": "quoteTerm",
+    "named": false
+  },
+  {
+    "type": "unquote",
+    "named": false
+  },
+  {
+    "type": "(|",
+    "named": false
+  },
+  {
+    "type": "|)",
+    "named": false
+  }
+]

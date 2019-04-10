@@ -5,12 +5,13 @@
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #endif
 
-#define LANGUAGE_VERSION 9
+#define LANGUAGE_VERSION 10
 #define STATE_COUNT 94
 #define SYMBOL_COUNT 40
 #define ALIAS_COUNT 0
 #define TOKEN_COUNT 24
 #define EXTERNAL_TOKEN_COUNT 9
+#define FIELD_COUNT 0
 #define MAX_ALIAS_SEQUENCE_LENGTH 4
 
 enum {
@@ -1556,7 +1557,7 @@ static TSParseActionEntry ts_parse_actions[] = {
   [251] = {.count = 1, .reusable = true}, REDUCE(sym_quoted_attribute_value, 3),
 };
 
-void *tree_sitter_html_external_scanner_create();
+void *tree_sitter_html_external_scanner_create(void);
 void tree_sitter_html_external_scanner_destroy(void *);
 bool tree_sitter_html_external_scanner_scan(void *, TSLexer *, const bool *);
 unsigned tree_sitter_html_external_scanner_serialize(void *, char *);
@@ -1566,7 +1567,7 @@ void tree_sitter_html_external_scanner_deserialize(void *, const char *, unsigne
 #define extern __declspec(dllexport)
 #endif
 
-extern const TSLanguage *tree_sitter_html() {
+extern const TSLanguage *tree_sitter_html(void) {
   static TSLanguage language = {
     .version = LANGUAGE_VERSION,
     .symbol_count = SYMBOL_COUNT,
@@ -1577,6 +1578,7 @@ extern const TSLanguage *tree_sitter_html() {
     .parse_actions = ts_parse_actions,
     .lex_modes = ts_lex_modes,
     .symbol_names = ts_symbol_names,
+    .field_count = FIELD_COUNT,
     .max_alias_sequence_length = MAX_ALIAS_SEQUENCE_LENGTH,
     .lex_fn = ts_lex,
     .external_token_count = EXTERNAL_TOKEN_COUNT,

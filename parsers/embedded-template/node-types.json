@@ -1,0 +1,54 @@
+[
+  {
+    "type": "comment_directive",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "directive",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "output_directive",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "template",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "<%",
+    "named": false
+  },
+  {
+    "type": "<%_",
+    "named": false
+  },
+  {
+    "type": "%>",
+    "named": false
+  },
+  {
+    "type": "-%>",
+    "named": false
+  },
+  {
+    "type": "_%>",
+    "named": false
+  },
+  {
+    "type": "<%=",
+    "named": false
+  },
+  {
+    "type": "<%-",
+    "named": false
+  },
+  {
+    "type": "<%#",
+    "named": false
+  }
+]
