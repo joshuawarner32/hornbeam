@@ -222,12 +222,6 @@ fn print_children<'a>(node: &Node<'a>, indent: usize) {
     println!("{:indent$}End {:?}", "", node.kind(), indent=indent*2);
 }
 
-fn find_lang(text: &str) -> Language {
-    let l = text.find("lang:").unwrap();
-    let t = text[l + "lang:".len()..].trim();
-    Language::from_str(t).unwrap()
-}
-
 fn main() {
     let args = ParseArgs::from_args();
 
@@ -248,10 +242,10 @@ fn main() {
                 }
             }
         }
-        Tool::Transform(transform) => {
+        Tool::Transform(_transform) => {
             // TODO
         }
-        Tool::Show(mut parser) => {
+        Tool::Show(parser) => {
             for (i, name) in parser.info.kind_names().iter().enumerate() {
                 println!("{}: {}", i, name);
             }
